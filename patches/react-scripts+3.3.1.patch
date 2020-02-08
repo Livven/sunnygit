@@ -1,0 +1,36 @@
+diff --git a/node_modules/react-scripts/config/webpack.config.js b/node_modules/react-scripts/config/webpack.config.js
+index b7cf765..d7f2836 100644
+--- a/node_modules/react-scripts/config/webpack.config.js
++++ b/node_modules/react-scripts/config/webpack.config.js
+@@ -557,6 +557,11 @@ module.exports = function(webpackEnv) {
+                 'sass-loader'
+               ),
+             },
++            // for nodegit, also see https://github.com/webpack-contrib/node-loader/issues/12
++            {
++              test: /\.node$/,
++              loader: process.env.NODE_ENV === 'development' ? 'node-loader' : 'native-addon-loader'
++            },
+             // "file" loader makes sure those assets get served by WebpackDevServer.
+             // When you `import` an asset, you get its (virtual) filename.
+             // In production, they would get copied to the `build` folder.
+@@ -723,6 +728,10 @@ module.exports = function(webpackEnv) {
+           formatter: isEnvProduction ? typescriptFormatter : undefined,
+         }),
+     ].filter(Boolean),
++
++    // support Electron, see https://github.com/facebook/create-react-app/issues/6782 and https://github.com/facebook/create-react-app/pull/5498
++    target: 'electron-renderer',
++    /*
+     // Some libraries import Node modules but don't use them in the browser.
+     // Tell Webpack to provide empty mocks for them so importing them works.
+     node: {
+@@ -735,6 +744,8 @@ module.exports = function(webpackEnv) {
+       tls: 'empty',
+       child_process: 'empty',
+     },
++    */
++    
+     // Turn off performance processing because we utilize
+     // our own hints via the FileSizeReporter
+     performance: false,

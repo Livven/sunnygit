@@ -1,0 +1,6 @@
+# have to rebuild in postinstall anyway so no need to do it here as long as we build for the same platform
+npmRebuild: false
+# with bundling the benefits are minimal so let's keep things more transparent
+asar: false
+files:
+  - "!node_modules"

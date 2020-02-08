@@ -1,0 +1,25 @@
+diff --git a/node_modules/nodegit/dist/nodegit.js b/node_modules/nodegit/dist/nodegit.js
+index 234f696..e835217 100644
+--- a/node_modules/nodegit/dist/nodegit.js
++++ b/node_modules/nodegit/dist/nodegit.js
+@@ -16,7 +16,8 @@ try {
+     throw ex;
+   }
+ 
+-  rawApi = require("../build/Debug/nodegit.node");
++  // a bundler might try to resolve this dynamic require regardless of the result of the if-condition, which will not work if the target does not exist
++  // rawApi = require("../build/Debug/nodegit.node");
+ }
+ 
+ // For disccussion on why `cloneDeep` is required, see:
+@@ -1298,8 +1299,9 @@ rawApi.Revert = _Revert.revert;
+ 
+ /* jshint ignore:end */
+ 
++// no idea why this line throws an error in the production build, much less why it still works when commented out!
+ // Wrap asynchronous methods to return promises.
+-promisify(exports);
++// promisify(exports);
+ 
+ // Set version.
+ exports.version = require("../package").version;
