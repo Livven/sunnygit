@@ -1,0 +1,38 @@
+on: push
+
+env:
+  # why in the world is this not set by default?
+  CI: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm run pipeline
+      - uses: actions/upload-artifact@v1
+        with:
+          name: app-${{ runner.os }}
+          path: dist
+  # nodegit build does not work by default, apt-get install never finished either, and can't specify container conditionally
+  build-linux:
+    runs-on: ubuntu-latest
+    container:
+      image: node:lts
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm run pipeline
+      - uses: actions/upload-artifact@v1
+        with:
+          name: app-${{ runner.os }}
+          path: dist
