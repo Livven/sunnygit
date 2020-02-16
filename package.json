@@ -13,7 +13,7 @@
     "package": "electron-builder --dir",
     "package-setup": "electron-builder --publish never",
     "lint": "npm-run-all --parallel lint:*",
-    "prettier-fix": "prettier --write **",
+    "prettier-fix": "prettier --write \"**\"",
     "clean": "shx rm -rf {build,dist}",
     "pipeline": "npm-run-all clean lint build test package-setup",
     "---- lifecycle ----": "",
@@ -22,7 +22,8 @@
     "start:cra": "react-scripts start",
     "start:electron": "electron .",
     "lint:eslint": "cross-env ESLINT_IGNORE_TODOS=true eslint src --ext js,jsx,ts,tsx --max-warnings 0",
-    "lint:prettier": "prettier --check **"
+    "lint:stylelint": "stylelint \"src/**/*.{css,js,jsx,ts,tsx}\" --max-warnings 0",
+    "lint:prettier": "prettier --check \"**\""
   },
   "dependencies": {
     "nodegit": "^0.26.4",
@@ -52,6 +53,13 @@
     "prettier": "^1.19.1",
     "react-scripts": "3.3.1",
     "shx": "^0.3.2",
+    "stylelint": "^13.2.0",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-order": "^4.0.0",
+    "stylelint-prettier": "^1.1.2",
     "typescript": "^3.7.5"
   },
   "browserslist": {
