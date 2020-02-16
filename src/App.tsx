@@ -1,47 +1,89 @@
-import "electron";
-import "./App.css";
-
-import git from "nodegit";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components/macro";
 
-import logo from "./logo.svg";
+import { CommitList } from "./components/CommitList";
+import { CommitPanel } from "./components/CommitPanel";
+import { Sidebar } from "./components/Sidebar";
+import { Commit, getRepoDetails, Ref, Repo } from "./git";
+import { backgroundColor, borderColor } from "./shared";
 
-const App = () => {
+const Container = styled.div`
+  display: grid;
+  grid: auto 1fr / 250px 350px 1fr;
+  grid-gap: 1px;
+  height: 100vh;
+  background: ${borderColor};
+
+  > * {
+    overflow: auto;
+    background: ${backgroundColor};
+  }
+`;
+
+const Toolbar = styled.div`
+  grid-row: 1;
+  grid-column: 1 / 4;
+  height: 40px;
+  background: ${backgroundColor};
+`;
+
+const StyledSidebar = styled(Sidebar)`
+  grid-row: 2;
+`;
+
+const StyledCommitList = styled(CommitList)`
+  grid-row: 2;
+  grid-column: 2;
+`;
+
+const StyledCommitPanel = styled(CommitPanel)`
+  grid-row: 2;
+  grid-column: 3;
+`;
+
+function App() {
   const [repoPath, setRepoPath] = useState("");
-  const [message, setMessage] = useState("");
+  // this might rather be an async memo?
+  const [repo, setRepo] = useState<Repo>();
+  const [selectedRef, setSelectedRef] = useState<Ref>();
+  const [selectedCommit, setSelectedCommit] = useState<Commit>();
+
   useEffect(() => {
     (async () => {
-      try {
-        const repo = await git.Repository.open(repoPath);
-        const commit = await repo.getHeadCommit();
-        setMessage(commit.message());
-      } catch (error) {
-        setMessage(error.toString());
-      }
+      setRepo(await getRepoDetails(repoPath));
     })();
   }, [repoPath]);
+
   return (
-    <div
-      className="App"
+    <Container
       onDragOver={e => e.preventDefault()}
       onDrop={e => setRepoPath(e.dataTransfer.files[0].path)}
     >
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload. Message: {message}
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Toolbar />
+      <StyledSidebar
+        repo={repo}
+        selectedRefName={selectedRef?.name}
+        onSelection={ref => {
+          setSelectedRef(ref);
+          // TODO handle annotated tags (where ref.target is not a commit SHA)
+          setSelectedCommit(
+            repo?.commits.find(commit => commit.sha === ref.target)
+          );
+        }}
+      />
+      <StyledCommitList
+        commits={repo?.commits}
+        selectedCommitSha={selectedCommit?.sha}
+        onSelection={commit => {
+          setSelectedCommit(commit);
+          if (commit.sha !== selectedRef?.target) {
+            setSelectedRef(undefined);
+          }
+        }}
+      />
+      <StyledCommitPanel commit={selectedCommit} />
+    </Container>
   );
-};
+}
 
 export default App;

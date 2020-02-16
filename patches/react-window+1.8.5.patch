@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-window/dist/index.esm.js b/node_modules/react-window/dist/index.esm.js
+index be35b31..131317f 100644
+--- a/node_modules/react-window/dist/index.esm.js
++++ b/node_modules/react-window/dist/index.esm.js
+@@ -1951,7 +1951,8 @@ createListComponent({
+     var minOffset = Math.max(0, index * itemSize - size + itemSize);
+ 
+     if (align === 'smart') {
+-      if (scrollOffset >= minOffset - size && scrollOffset <= maxOffset + size) {
++      // always center item if it is not within viewport, even if it is less than one viewport away
++      if (scrollOffset >= minOffset - itemSize && scrollOffset <= maxOffset + itemSize) {
+         align = 'auto';
+       } else {
+         align = 'center';

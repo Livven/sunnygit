@@ -1,0 +1,39 @@
+diff --git a/node_modules/@types/nodegit/error.d.ts b/node_modules/@types/nodegit/error.d.ts
+index c259749..04c72c0 100644
+--- a/node_modules/@types/nodegit/error.d.ts
++++ b/node_modules/@types/nodegit/error.d.ts
+@@ -1,5 +1,5 @@
+-export namespace Error {
+-    const enum ERROR {
++export const Error = {
++    ERROR = {
+         GITERR_NONE = 0,
+         GITERR_NOMEMORY = 1,
+         GITERR_OS = 2,
+@@ -31,9 +31,9 @@ export namespace Error {
+         GITERR_DESCRIBE = 28,
+         GITERR_REBASE = 29,
+         GITERR_FILESYSTEM = 30
+-    }
++    },
+ 
+-    const enum CODE {
++    CODE = {
+         OK = 0,
+         ERROR = -1,
+         ENOTFOUND = -3,
+diff --git a/node_modules/@types/nodegit/rev-walk.d.ts b/node_modules/@types/nodegit/rev-walk.d.ts
+index 03781cc..1e4647c 100644
+--- a/node_modules/@types/nodegit/rev-walk.d.ts
++++ b/node_modules/@types/nodegit/rev-walk.d.ts
+@@ -2,8 +2,8 @@ import { Repository } from './repository';
+ import { Oid } from './oid';
+ import { Commit } from './commit';
+ 
+-export namespace Revwalk {
+-    const enum SORT {
++export const Revwalk = {
++    SORT = {
+         NONE = 0,
+         TOPOLOGICAL = 1,
+         TIME = 2,
