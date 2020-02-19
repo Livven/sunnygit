@@ -30,7 +30,9 @@ jobs:
       image: node:lts
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci
+      # --unsafe-perm should not be needed with the node Docker image
+      # worked fine with runner version 2.164.0, not anymore since 2.165.2
+      - run: npm ci --unsafe-perm
       - run: npm run pipeline
       - uses: actions/upload-artifact@v1
         with:
