@@ -57,7 +57,12 @@ function App() {
   return (
     <Container
       onDragOver={e => e.preventDefault()}
-      onDrop={e => setRepoPath(e.dataTransfer.files[0].path)}
+      onDrop={e => {
+        const path = e.dataTransfer.files[0]?.path;
+        if (path) {
+          setRepoPath(path);
+        }
+      }}
     >
       <Toolbar />
       <StyledSidebar
