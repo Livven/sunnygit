@@ -23,6 +23,22 @@ export type Repo = Unpacked<typeof getRepoDetails>;
 export type Commit = Unpacked<typeof getCommits>;
 export type Ref = Unpacked<typeof getRef>;
 export type Signature = Unpacked<typeof getSignature>;
+export type Diff = Unpacked<typeof getDiffs>;
+export type Patch = Unpacked<typeof getPatch>;
+
+export class GitClient {
+  readonly repoPath: string;
+
+  constructor(repoPath: string) {
+    this.repoPath = repoPath;
+  }
+
+  async getDiffs(commitSha: string) {
+    const repo = await git.Repository.open(this.repoPath);
+    const commit = await repo.getCommit(commitSha);
+    return await getDiffs(commit);
+  }
+}
 
 export async function getRepoDetails(repoPath: string) {
   const absoluteRepoPath = path.resolve(repoPath);
@@ -80,7 +96,7 @@ async function getRef(ref: git.Reference) {
     shorthand: ref.shorthand(),
     type,
     target: ref.target().tostrS(),
-  };
+  } as const;
 }
 
 async function getCommit(commit: git.Commit) {
@@ -105,6 +121,91 @@ function getSignature(signature: git.Signature) {
     email: signature.email(),
     time: when.time(),
     offset: when.offset(),
+  };
+}
+
+async function getDiffs(commit: git.Commit) {
+  const parents = await commit.getParents();
+  const diffs =
+    parents.length > 0
+      ? await Promise.all(
+          parents.map(async parent => await getDiff(commit, parent))
+        )
+      : [await getDiff(commit)];
+  return diffs;
+}
+
+async function getDiff(commit: git.Commit, parent?: git.Commit) {
+  const tree = await commit.getTree();
+  const parentTree = await parent?.getTree();
+  const diff = await tree.diff(parentTree);
+
+  await diff.findSimilar();
+  const patches = await Promise.all(
+    (await diff.patches()).map(
+      async patch => await getPatch(patch, tree, parentTree)
+    )
+  );
+  return {
+    parent: parent?.sha(),
+    patches,
+  };
+}
+
+async function getPatch(
+  patch: git.ConvenientPatch,
+  tree: git.Tree,
+  parentTree: git.Tree | undefined
+) {
+  const oldFile =
+    !patch.isAdded() && parentTree
+      ? await getEntry(parentTree, patch.oldFile().path())
+      : undefined;
+
+  const newFilePath = patch.newFile().path();
+  const newFile = !patch.isDeleted()
+    ? await getEntry(tree, newFilePath)
+    : undefined;
+
+  return {
+    path: newFilePath,
+    newFile,
+    oldFile,
+    type: patch.isAdded()
+      ? "added"
+      : patch.isConflicted()
+      ? "conflicted"
+      : patch.isCopied()
+      ? "copied"
+      : patch.isDeleted()
+      ? "deleted"
+      : patch.isIgnored()
+      ? "ignored"
+      : patch.isModified()
+      ? "modified"
+      : patch.isRenamed()
+      ? "renamed"
+      : patch.isTypeChange()
+      ? "typechange"
+      : patch.isUnmodified()
+      ? "unmodified"
+      : patch.isUnreadable()
+      ? "unreadable"
+      : patch.isUntracked()
+      ? "untracked"
+      : undefined,
+  } as const;
+}
+
+async function getEntry(tree: git.Tree, path: string) {
+  const entry = await tree.getEntry(path);
+  const blob = await entry.getBlob();
+  const isBinary = !!blob.isBinary();
+  return {
+    path: entry.path(),
+    isBinary,
+    size: blob.rawsize(),
+    content: isBinary ? undefined : blob.content().toString(),
   };
 }
 

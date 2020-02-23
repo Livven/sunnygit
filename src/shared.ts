@@ -1,6 +1,7 @@
 import { Colors } from "@blueprintjs/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useState } from "react";
 import { css } from "styled-components/macro";
 
 dayjs.extend(relativeTime);
@@ -17,7 +18,18 @@ export const itemGapStyle = css`
   }
 `;
 
-export type CommonProps = { className?: string };
+export type CommonProps = {
+  className?: string;
+  triggerRerender?: number;
+};
+
+export function useRerender() {
+  const [value, setValue] = useState(0);
+  return {
+    value,
+    trigger: () => setValue(prev => prev + 1),
+  };
+}
 
 export function longDate(unixTimeSeconds: number) {
   return dayjs.unix(unixTimeSeconds).format("dddd, D MMMM YYYY, HH:mm");

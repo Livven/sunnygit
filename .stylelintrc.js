@@ -6,6 +6,8 @@ module.exports = {
     "stylelint-prettier/recommended",
   ],
   rules: {
+    "comment-empty-line-before": null,
+
     // these rules from stylelint-config-standard don't work properly with css-in-js
     "declaration-empty-line-before": null,
     "value-keyword-case": null,

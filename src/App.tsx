@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components/macro";
 
 import { CommitList } from "./components/CommitList";
 import { CommitPanel } from "./components/CommitPanel";
 import { Sidebar } from "./components/Sidebar";
-import { Commit, getRepoDetails, Ref, Repo } from "./git";
-import { backgroundColor, borderColor } from "./shared";
+import { Commit, getRepoDetails, GitClient, Ref, Repo } from "./git";
+import { GitProvider } from "./GitContext";
+import { backgroundColor, borderColor, useRerender } from "./shared";
 
 const Container = styled.div`
   display: grid;
@@ -43,10 +44,13 @@ const StyledCommitPanel = styled(CommitPanel)`
 
 function App() {
   const [repoPath, setRepoPath] = useState("");
+  const gitClient = useMemo(() => new GitClient(repoPath), [repoPath]);
   // this might rather be an async memo?
   const [repo, setRepo] = useState<Repo>();
+
   const [selectedRef, setSelectedRef] = useState<Ref>();
   const [selectedCommit, setSelectedCommit] = useState<Commit>();
+  const commitRerender = useRerender();
 
   useEffect(() => {
     (async () => {
@@ -57,39 +61,45 @@ function App() {
   }, [repoPath]);
 
   return (
-    <Container
-      onDragOver={e => e.preventDefault()}
-      onDrop={e => {
-        const path = e.dataTransfer.files[0]?.path;
-        if (path) {
-          setRepoPath(path);
-        }
-      }}
-    >
-      <Toolbar />
-      <StyledSidebar
-        repo={repo}
-        selectedRefName={selectedRef?.name}
-        onSelection={ref => {
-          setSelectedRef(ref);
-          // TODO handle annotated tags (where ref.target is not a commit SHA)
-          setSelectedCommit(
-            repo?.commits.find(commit => commit.sha === ref.target)
-          );
-        }}
-      />
-      <StyledCommitList
-        commits={repo?.commits}
-        selectedCommitSha={selectedCommit?.sha}
-        onSelection={commit => {
-          setSelectedCommit(commit);
-          if (commit.sha !== selectedRef?.target) {
-            setSelectedRef(undefined);
+    <GitProvider value={gitClient}>
+      <Container
+        onDragOver={e => e.preventDefault()}
+        onDrop={e => {
+          const path = e.dataTransfer.files[0]?.path;
+          if (path) {
+            setRepoPath(path);
           }
         }}
-      />
-      <StyledCommitPanel commit={selectedCommit} />
-    </Container>
+      >
+        <Toolbar />
+        <StyledSidebar
+          repo={repo}
+          selectedRefName={selectedRef?.name}
+          onSelection={ref => {
+            setSelectedRef(ref);
+            // TODO handle annotated tags (where ref.target is not a commit SHA)
+            setSelectedCommit(
+              repo?.commits.find(commit => commit.sha === ref.target)
+            );
+          }}
+        />
+        <StyledCommitList
+          commits={repo?.commits}
+          selectedCommitSha={selectedCommit?.sha}
+          onSelection={commit => {
+            setSelectedCommit(commit);
+            if (commit.sha !== selectedRef?.target) {
+              setSelectedRef(undefined);
+            }
+            commitRerender.trigger();
+          }}
+        />
+        <StyledCommitPanel
+          commit={selectedCommit}
+          triggerRerender={commitRerender.value}
+        />
+      </Container>
+    </GitProvider>
   );
 }
 
