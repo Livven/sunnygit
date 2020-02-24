@@ -50,7 +50,7 @@
     "@types/react-dom": "^16.9.5",
     "@types/react-measure": "^2.0.6",
     "@types/react-window": "^1.8.1",
-    "@types/styled-components": "^4.4.2",
+    "@types/styled-components": "^5.0.0",
     "cross-env": "^7.0.0",
     "electron": "^8.0.1",
     "electron-builder": "^22.3.2",
