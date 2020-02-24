@@ -50,6 +50,8 @@ function App() {
 
   useEffect(() => {
     (async () => {
+      setSelectedRef(undefined);
+      setSelectedCommit(undefined);
       setRepo(await getRepoDetails(repoPath));
     })();
   }, [repoPath]);
