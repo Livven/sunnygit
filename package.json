@@ -9,7 +9,6 @@
     "start-built": "npm-run-all start:electron",
     "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test || echo \"Ignoring failure for now due to node version mismatch.\"",
-    "eject": "react-scripts eject",
     "package": "electron-builder --dir",
     "package-setup": "electron-builder --publish never",
     "lint": "npm-run-all --parallel lint:*",
@@ -76,6 +75,7 @@
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-order": "^4.0.0",
     "stylelint-prettier": "^1.1.2",
+    "type-fest": "^0.11.0",
     "typescript": "^3.8.2"
   },
   "browserslist": {

@@ -1,15 +1,8 @@
 diff --git a/node_modules/promisify-node/index.js b/node_modules/promisify-node/index.js
-index 54474b6..8cf257c 100644
+index 54474b6..36995dd 100644
 --- a/node_modules/promisify-node/index.js
 +++ b/node_modules/promisify-node/index.js
-@@ -98,13 +98,15 @@ function processExports(exports, test, cached, parentKeyName) {
-  * @param {Function} test - Optional function to identify async methods.
-  * @returns {*} exports - The resolved value from require or passed in value.
-  */
--module.exports = function(name, test) {
-+module.exports = function (name, test) {
-   var exports = name;
- 
+@@ -104,7 +104,9 @@ module.exports = function(name, test) {
    // If the name argument is a String, will need to resovle using the built in
    // Node require function.
    if (typeof name === "string") {

@@ -1,10 +1,9 @@
 import { ITreeNode, Tree } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
+import { SetOptional } from "type-fest";
 
 import { Ref, Repo } from "../git";
 import { CommonProps } from "../shared";
-
-type PartialPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 type Props = {
   repo: Repo;
@@ -14,7 +13,7 @@ type Props = {
 
 export { SidebarWrapper as Sidebar };
 
-function SidebarWrapper(props: PartialPartial<Props, "repo">) {
+function SidebarWrapper(props: SetOptional<Props, "repo">) {
   return props.repo ? (
     <Sidebar {...props} repo={props.repo} />
   ) : (

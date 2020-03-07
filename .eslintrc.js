@@ -27,9 +27,5 @@ module.exports = {
         patterns: ["!styled-components/macro"],
       },
     ],
-
-    // highlight TODOs in editor but ignore them otherwise
-    "no-warning-comments":
-      process.env.ESLINT_IGNORE_TODOS === "true" ? "off" : "warn",
   },
 };
