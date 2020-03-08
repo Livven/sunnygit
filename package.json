@@ -8,7 +8,7 @@
     "start": "cross-env NODE_ENV=development NODE_OPTIONS=--max-old-space-size=4096 BROWSER=none TSC_COMPILE_ON_ERROR=true npm-run-all --parallel start:*",
     "start-built": "npm-run-all start:electron",
     "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "react-scripts test || echo \"Ignoring failure for now due to node version mismatch.\"",
+    "test": "react-scripts test",
     "package": "electron-builder --dir",
     "package-setup": "electron-builder --publish never",
     "lint": "npm-run-all --parallel lint:*",

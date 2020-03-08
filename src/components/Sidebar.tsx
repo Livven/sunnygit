@@ -1,9 +1,19 @@
 import { ITreeNode, Tree } from "@blueprintjs/core";
-import React, { useEffect, useState } from "react";
+import _ from "lodash";
+import React, { useEffect } from "react";
 import { SetOptional } from "type-fest";
 
 import { Ref, Repo } from "../git";
 import { CommonProps } from "../shared";
+import { nestList, TreeListNode } from "../util/tree";
+import { useTreeExpansion } from "../util/treeHook";
+
+const refIcon: Record<Ref["type"], ITreeNode["icon"]> = {
+  branch: "git-branch",
+  remote: "git-branch",
+  tag: "tag",
+  other: undefined,
+};
 
 type Props = {
   repo: Repo;
@@ -22,35 +32,35 @@ function SidebarWrapper(props: SetOptional<Props, "repo">) {
 }
 
 function Sidebar({ className, onSelection, repo, selectedRefName }: Props) {
-  const [expandedNodeIds, setExpandedNodeIds] = useState<Set<string>>(
-    new Set()
+  const { isExpanded, resetExpansions, toggleExpansion } = useTreeExpansion(
+    false
   );
-  useEffect(() => setExpandedNodeIds(new Set(["branches"])), [repo.path]);
+  useEffect(() => resetExpansions(["branches", "remotes"]), [
+    repo.path,
+    resetExpansions,
+  ]);
 
   const treeNodes: ITreeNode<Ref>[] = [
     {
       id: "branches",
       label: "Branches",
-      icon: "git-branch",
       hasCaret: true,
-      isExpanded: expandedNodeIds.has("branches"),
-      childNodes: createChildNodes(repo.branches, selectedRefName),
+      isExpanded: isExpanded("branches"),
+      childNodes: convertRefs(repo.branches),
     },
     {
       id: "remotes",
       label: "Remotes",
-      icon: "globe-network",
       hasCaret: true,
-      isExpanded: expandedNodeIds.has("remotes"),
-      childNodes: createChildNodes(repo.remotes, selectedRefName),
+      isExpanded: isExpanded("remotes"),
+      childNodes: convertRefs(repo.remotes, "globe-network"),
     },
     {
       id: "tags",
       label: "Tags",
-      icon: "tag",
       hasCaret: true,
-      isExpanded: expandedNodeIds.has("tags"),
-      childNodes: createChildNodes(repo.tags, selectedRefName),
+      isExpanded: isExpanded("tags"),
+      childNodes: convertRefs(repo.tags),
     },
   ];
 
@@ -62,27 +72,47 @@ function Sidebar({ className, onSelection, repo, selectedRefName }: Props) {
         if (node.nodeData) {
           onSelection(node.nodeData);
         }
+        if (node.childNodes) {
+          toggleExpansion(node.id.toString());
+        }
       }}
-      onNodeCollapse={node => {
-        expandedNodeIds.delete(node.id.toString());
-        setExpandedNodeIds(new Set(expandedNodeIds));
-      }}
-      onNodeExpand={node => {
-        expandedNodeIds.add(node.id.toString());
-        setExpandedNodeIds(new Set(expandedNodeIds));
-      }}
+      onNodeCollapse={node => toggleExpansion(node.id.toString(), false)}
+      onNodeExpand={node => toggleExpansion(node.id.toString(), true)}
     />
   );
-}
 
-function createChildNodes(refs: Ref[], selectedRefName?: string) {
-  return refs?.map(
-    ref =>
-      ({
-        id: ref.name,
-        label: ref.shorthand,
-        nodeData: ref,
-        isSelected: ref.name === selectedRefName,
-      } as ITreeNode<Ref>)
-  );
+  function convertRefs(refs: Ref[], icon?: ITreeNode["icon"]) {
+    const tree = nestList(refs, ref => ref.name.split("/").slice(2));
+    return convertTree(tree, icon);
+  }
+
+  function convertTree(
+    tree: TreeListNode<Ref>[],
+    icon?: ITreeNode["icon"]
+  ): ITreeNode<Ref>[] {
+    const converted = tree.map(node => convertTreeNode(node, icon));
+    return _.sortBy(converted, [item => item.childNodes, item => item.id]);
+  }
+
+  function convertTreeNode(
+    node: TreeListNode<Ref>,
+    icon?: ITreeNode["icon"]
+  ): ITreeNode<Ref> {
+    const ref = node.value;
+    return {
+      id: node.path,
+      label: <span title={ref?.name}>{node.name}</span>,
+      ...(ref
+        ? {
+            icon: refIcon[ref.type],
+            isSelected: ref.name === selectedRefName,
+            nodeData: ref,
+          }
+        : {
+            icon: icon || "folder-close",
+            isExpanded: isExpanded(node.path),
+            childNodes: convertTree(node.children),
+          }),
+    };
+  }
 }

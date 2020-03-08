@@ -1,4 +1,5 @@
 import { Colors } from "@blueprintjs/core";
+import _ from "lodash";
 import { createGlobalStyle, css } from "styled-components/macro";
 
 // from https://tailwindcss.com/docs/box-shadow
@@ -30,6 +31,14 @@ const blueprintOverrides = css`
       }
     }
   }
+
+  ${_.range(20).map(
+    i => css`
+      .bp3-tree-node-content-${i} {
+        padding-left: ${i * 12}px;
+      }
+    `
+  )}
 `;
 
 // do not put styles here directly as prettier does not recognize template literals tagged with `createGlobalStyle`, only `css`
