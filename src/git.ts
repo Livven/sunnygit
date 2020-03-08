@@ -54,9 +54,9 @@ export async function getRepoDetails(repoPath: string) {
   const refsByType = _.groupBy(refs, ref => ref.type);
   return {
     path: absoluteRepoPath,
-    branches: refsByType["branch"],
-    remotes: refsByType["remote"],
-    tags: refsByType["tag"],
+    branches: refsByType["branch"] || [],
+    remotes: refsByType["remote"] || [],
+    tags: refsByType["tag"] || [],
     commits: await getCommits(repo, refs),
   };
 }
