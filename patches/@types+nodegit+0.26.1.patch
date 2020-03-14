@@ -12,14 +12,13 @@ index 8152eb8..1606c33 100644
       * Retrieve the commit's parent shas.
       *
 diff --git a/node_modules/@types/nodegit/error.d.ts b/node_modules/@types/nodegit/error.d.ts
-index c259749..04c72c0 100644
+index c259749..5940953 100644
 --- a/node_modules/@types/nodegit/error.d.ts
 +++ b/node_modules/@types/nodegit/error.d.ts
 @@ -1,5 +1,5 @@
--export namespace Error {
+ export namespace Error {
 -    const enum ERROR {
-+export const Error = {
-+    ERROR = {
++    const ERROR = {
          GITERR_NONE = 0,
          GITERR_NOMEMORY = 1,
          GITERR_OS = 2,
@@ -31,22 +30,20 @@ index c259749..04c72c0 100644
 +    },
  
 -    const enum CODE {
-+    CODE = {
++    const CODE = {
          OK = 0,
          ERROR = -1,
          ENOTFOUND = -3,
 diff --git a/node_modules/@types/nodegit/rev-walk.d.ts b/node_modules/@types/nodegit/rev-walk.d.ts
-index 03781cc..1e4647c 100644
+index 03781cc..bb6f81b 100644
 --- a/node_modules/@types/nodegit/rev-walk.d.ts
 +++ b/node_modules/@types/nodegit/rev-walk.d.ts
-@@ -2,8 +2,8 @@ import { Repository } from './repository';
- import { Oid } from './oid';
+@@ -3,7 +3,7 @@ import { Oid } from './oid';
  import { Commit } from './commit';
  
--export namespace Revwalk {
+ export namespace Revwalk {
 -    const enum SORT {
-+export const Revwalk = {
-+    SORT = {
++    const SORT = {
          NONE = 0,
          TOPOLOGICAL = 1,
          TIME = 2,

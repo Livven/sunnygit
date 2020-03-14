@@ -73,7 +73,7 @@ async function getCommits(repo: git.Repository, refs: Ref[]) {
     try {
       const commitId = await walker.next();
       const commit = await getCommit(await repo.getCommit(commitId));
-      result.push({ ...commit, refs: commitToRefs[commitId] || [] });
+      result.push({ ...commit, refs: commitToRefs[commitId.tostrS()] || [] });
     } catch (error) {
       if (error.errno === git.Error.CODE.ITEROVER) {
         return result;
