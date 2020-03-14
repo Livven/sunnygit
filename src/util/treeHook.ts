@@ -1,13 +1,13 @@
-import { useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useTreeExpansion(initial: boolean) {
   const [ids, setIds] = useState<Set<string>>(new Set());
-  const isExpanded = useMemo(() => (id: string) => ids.has(id) !== initial, [
+  const isExpanded = useCallback((id: string) => ids.has(id) !== initial, [
     ids,
     initial,
   ]);
-  const toggleExpansion = useMemo(
-    () => (id: string, expand?: boolean) => {
+  const toggleExpansion = useCallback(
+    (id: string, expand?: boolean) => {
       if ((expand ?? !isExpanded(id)) !== initial) {
         ids.add(id);
       } else {
@@ -17,8 +17,8 @@ export function useTreeExpansion(initial: boolean) {
     },
     [ids, initial, isExpanded]
   );
-  const resetExpansions = useMemo(
-    () => (ids?: string[]) => setIds(new Set(ids)),
+  const resetExpansions = useCallback(
+    (ids?: string[]) => setIds(new Set(ids)),
     []
   );
   return {

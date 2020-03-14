@@ -21,8 +21,8 @@ type Unpacked<T> = T extends (...args: any[]) => Promise<(infer U)[]>
 // use these inferred types for now for faster iteration
 export type Repo = Unpacked<typeof getRepoDetails>;
 export type Commit = Unpacked<typeof getCommits>;
-export type Ref = Unpacked<typeof getRef>;
-export type Signature = Unpacked<typeof getSignature>;
+export type Ref = Unpacked<typeof convertRef>;
+export type Signature = Unpacked<typeof convertSignature>;
 export type Diff = Unpacked<typeof getDiffs>;
 export type Patch = Unpacked<typeof getPatch>;
 
@@ -46,7 +46,7 @@ export async function getRepoDetails(repoPath: string) {
 
   // weirdly enough sometimes references seem to be duplicated
   const rawRefs = await Promise.all(
-    (await repo.getReferences()).map(async ref => await getRef(ref))
+    (await repo.getReferences()).map(async ref => await convertRef(ref))
   );
   const refs = _.uniqBy(rawRefs, ref => ref.name);
 
@@ -72,7 +72,7 @@ async function getCommits(repo: git.Repository, refs: Ref[]) {
   while (true) {
     try {
       const commitId = await walker.next();
-      const commit = await getCommit(await repo.getCommit(commitId));
+      const commit = await convertCommit(await repo.getCommit(commitId));
       result.push({ ...commit, refs: commitToRefs[commitId.tostrS()] || [] });
     } catch (error) {
       if (error.errno === git.Error.CODE.ITEROVER) {
@@ -83,7 +83,7 @@ async function getCommits(repo: git.Repository, refs: Ref[]) {
   }
 }
 
-async function getRef(ref: git.Reference) {
+function convertRef(ref: git.Reference) {
   const type = ref.isBranch()
     ? "branch"
     : ref.isRemote()
@@ -99,7 +99,7 @@ async function getRef(ref: git.Reference) {
   } as const;
 }
 
-async function getCommit(commit: git.Commit) {
+function convertCommit(commit: git.Commit) {
   const message = commit.message();
   const [messageTitle, messageBody] = splitFirst(message, "\n").map(text =>
     text.trim()
@@ -109,12 +109,12 @@ async function getCommit(commit: git.Commit) {
     originalMessage: message,
     messageTitle,
     messageBody,
-    author: getSignature(commit.author()),
-    committer: getSignature(commit.committer()),
+    author: convertSignature(commit.author()),
+    committer: convertSignature(commit.committer()),
   };
 }
 
-function getSignature(signature: git.Signature) {
+function convertSignature(signature: git.Signature) {
   const when = signature.when();
   return {
     name: signature.name(),
