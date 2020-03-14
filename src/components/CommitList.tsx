@@ -30,7 +30,9 @@ export function CommitList({
     } else {
       listRef.current?.scrollTo(0);
     }
-  }, [commits, selectedCommitSha]);
+    // don't scroll to selected commit when repository is refreshed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCommitSha]);
 
   return commits ? (
     <Measure bounds>

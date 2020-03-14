@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components/macro";
 
 import { CommitList } from "./components/CommitList";
 import { CommitPanel } from "./components/CommitPanel";
 import { Sidebar } from "./components/Sidebar";
-import { Commit, getRepoDetails, GitClient, Ref, Repo } from "./git";
+import { getRepoDetails, GitClient, Ref, Repo } from "./git";
 import { GitProvider } from "./GitContext";
 import { backgroundColor, borderColor, useRerender } from "./shared";
 
@@ -49,16 +49,32 @@ function App() {
   const [repo, setRepo] = useState<Repo>();
 
   const [selectedRef, setSelectedRef] = useState<Ref>();
-  const [selectedCommit, setSelectedCommit] = useState<Commit>();
+  const [desiredCommitSha, setDesiredCommitSha] = useState<string>();
+
+  // on repo refresh, deselect commit if it no longer exists
+  const selectedCommit = useMemo(
+    () => repo?.commits.find(commit => commit.sha === desiredCommitSha),
+    [repo, desiredCommitSha]
+  );
+
   const commitRerender = useRerender();
+
+  const refresh = useCallback(async () => {
+    setRepo(await getRepoDetails(repoPath));
+  }, [repoPath]);
 
   useEffect(() => {
     (async () => {
       setSelectedRef(undefined);
-      setSelectedCommit(undefined);
-      setRepo(await getRepoDetails(repoPath));
+      setDesiredCommitSha(undefined);
+      await refresh();
     })();
-  }, [repoPath]);
+  }, [refresh]);
+
+  useEffect(() => {
+    window.addEventListener("focus", refresh);
+    return () => window.removeEventListener("focus", refresh);
+  }, [refresh]);
 
   return (
     <GitProvider value={gitClient}>
@@ -78,16 +94,14 @@ function App() {
           onSelection={ref => {
             setSelectedRef(ref);
             // TODO handle annotated tags (where ref.target is not a commit SHA)
-            setSelectedCommit(
-              repo?.commits.find(commit => commit.sha === ref.target)
-            );
+            setDesiredCommitSha(ref.target);
           }}
         />
         <StyledCommitList
           commits={repo?.commits}
           selectedCommitSha={selectedCommit?.sha}
           onSelection={commit => {
-            setSelectedCommit(commit);
+            setDesiredCommitSha(commit.sha);
             if (commit.sha !== selectedRef?.target) {
               setSelectedRef(undefined);
             }

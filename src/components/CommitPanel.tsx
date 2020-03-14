@@ -102,7 +102,8 @@ export function CommitPanel({
     };
   }, [commit, gitClient]);
 
-  useEffect(() => setPatch(undefined), [commit, triggerRerender]);
+  const commitSha = commit?.sha;
+  useEffect(() => setPatch(undefined), [commitSha, triggerRerender]);
 
   const [diffMode, setDiffMode] = useState<DiffMode>("inline");
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(true);
