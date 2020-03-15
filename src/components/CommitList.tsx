@@ -9,6 +9,26 @@ import { CommitItem } from "./CommitItem";
 // TODO calculate this value dynamically somehow
 const commitItemHeight = 60.6;
 
+// this has to be defined separately and not inline to avoid undesired re-renderings
+// see https://github.com/bvaughn/react-window/issues/59 and https://github.com/bvaughn/react-window/issues/308#issuecomment-520941157
+const Row: React.ComponentProps<typeof FixedSizeList>["children"] = ({
+  data,
+  index,
+  style,
+}) => {
+  const { commits, onSelection, selectedCommitSha } = data;
+  const commit = commits[index];
+  return (
+    <div style={style}>
+      <CommitItem
+        commit={commit}
+        isSelected={commit.sha === selectedCommitSha}
+        onSelected={() => onSelection(commit)}
+      />
+    </div>
+  );
+};
+
 export function CommitList({
   className,
   commits,
@@ -42,23 +62,13 @@ export function CommitList({
             ref={listRef}
             height={contentRect.bounds?.height || 0}
             itemCount={commits.length}
+            itemData={{ commits, onSelection, selectedCommitSha }}
             itemKey={(i) => commits[i].sha}
             itemSize={commitItemHeight}
             overscanCount={4}
             width={contentRect.bounds?.width || 0}
           >
-            {({ index, style }) => {
-              const commit = commits[index];
-              return (
-                <div style={style}>
-                  <CommitItem
-                    commit={commit}
-                    isSelected={commit.sha === selectedCommitSha}
-                    onSelected={() => onSelection(commit)}
-                  />
-                </div>
-              );
-            }}
+            {Row}
           </FixedSizeList>
         </div>
       )}

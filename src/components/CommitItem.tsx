@@ -1,4 +1,4 @@
-import { Tag } from "@blueprintjs/core";
+import { ContextMenu, Menu, MenuItem, Tag } from "@blueprintjs/core";
 import React from "react";
 import styled from "styled-components/macro";
 
@@ -13,6 +13,9 @@ import {
   smartRelativeDate,
 } from "../shared";
 import { Avatar } from "./Avatar";
+import { useDialog } from "./Dialog";
+import { CreateBranchDialog } from "./DialogCreateBranch";
+import { CreateTagDialog } from "./DialogCreateTag";
 
 const Container = styled.div<{ isSelected: boolean }>`
   padding: 10px 12px;
@@ -87,28 +90,51 @@ export function CommitItem({
   isSelected: boolean;
   onSelected: () => void;
 } & CommonProps) {
+  const createBranchDialog = useDialog();
+  const createTagDialog = useDialog();
+
   return (
-    <Container
-      className={className}
-      isSelected={isSelected}
-      onClick={() => onSelected()}
-    >
-      <MetaRow>
-        <Photo email={commit.author.email} size={16} />
-        <Name>{commit.author.name}</Name>
-        {commit.refs.map((ref) => (
-          <Tag key={ref.name} minimal>
-            {ref.shorthand}
-          </Tag>
-        ))}
-        {/* achieves a consistent height for all items even if they don't have a ref */}
-        <Dummy />
-        <Date>{smartRelativeDate(commit.author.time)}</Date>
-      </MetaRow>
-      <TitleRow>
-        <Title>{commit.messageTitle}</Title>
-        <Sha title={commit.sha}>{commit.sha.substr(0, 3)}</Sha>
-      </TitleRow>
-    </Container>
+    <>
+      {/* put dialogs outside to prevent onClick handler from triggering */}
+      <CreateBranchDialog {...createBranchDialog.props} commit={commit} />
+      <CreateTagDialog {...createTagDialog.props} commit={commit} />
+      <Container
+        className={className}
+        isSelected={isSelected}
+        onClick={() => onSelected()}
+        onContextMenu={(e) =>
+          ContextMenu.show(
+            <Menu>
+              <MenuItem
+                text="Create branch"
+                onClick={() => createBranchDialog.open()}
+              />
+              <MenuItem
+                text="Create tag"
+                onClick={() => createTagDialog.open()}
+              />
+            </Menu>,
+            { left: e.clientX, top: e.clientY }
+          )
+        }
+      >
+        <MetaRow>
+          <Photo email={commit.author.email} size={16} />
+          <Name>{commit.author.name}</Name>
+          {commit.refs.map((ref) => (
+            <Tag key={ref.name} minimal>
+              {ref.shorthand}
+            </Tag>
+          ))}
+          {/* achieves a consistent height for all items even if they don't have a ref */}
+          <Dummy />
+          <Date>{smartRelativeDate(commit.author.time)}</Date>
+        </MetaRow>
+        <TitleRow>
+          <Title>{commit.messageTitle}</Title>
+          <Sha title={commit.sha}>{commit.sha.substr(0, 3)}</Sha>
+        </TitleRow>
+      </Container>
+    </>
   );
 }

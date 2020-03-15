@@ -59,7 +59,7 @@ function App() {
 
   const commitRerender = useRerender();
 
-  const refresh = useCallback(async () => {
+  const refreshRepo = useCallback(async () => {
     setRepo(await getRepoDetails(repoPath));
   }, [repoPath]);
 
@@ -67,17 +67,17 @@ function App() {
     (async () => {
       setSelectedRef(undefined);
       setDesiredCommitSha(undefined);
-      await refresh();
+      await refreshRepo();
     })();
-  }, [refresh]);
+  }, [refreshRepo]);
 
   useEffect(() => {
-    window.addEventListener("focus", refresh);
-    return () => window.removeEventListener("focus", refresh);
-  }, [refresh]);
+    window.addEventListener("focus", refreshRepo);
+    return () => window.removeEventListener("focus", refreshRepo);
+  }, [refreshRepo]);
 
   return (
-    <GitProvider value={gitClient}>
+    <GitProvider value={{ gitClient, refreshRepo }}>
       <Container
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {

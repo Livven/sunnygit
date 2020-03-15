@@ -2,14 +2,20 @@ import React, { useContext } from "react";
 
 import { GitClient } from "./git";
 
-const GitContext = React.createContext<GitClient | undefined>(undefined);
+const GitContext = React.createContext<
+  | {
+      gitClient: GitClient;
+      refreshRepo: () => void;
+    }
+  | undefined
+>(undefined);
 
 export const GitProvider = GitContext.Provider;
 
-export function useGitClient() {
-  const gitClient = useContext(GitContext);
-  if (!gitClient) {
+export function useGit() {
+  const context = useContext(GitContext);
+  if (!context) {
     throw new Error();
   }
-  return gitClient;
+  return context;
 }

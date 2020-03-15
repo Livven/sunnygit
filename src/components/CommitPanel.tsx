@@ -1,9 +1,9 @@
 import { Button, ButtonGroup, Tab, Tabs } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { Commit, Diff, Patch } from "../git";
-import { useGitClient } from "../GitContext";
+import { useGit } from "../GitContext";
 import {
   backgroundColor,
   borderColor,
@@ -82,7 +82,7 @@ export function CommitPanel({
 }: {
   commit?: Commit;
 } & CommonProps) {
-  const gitClient = useGitClient();
+  const { gitClient } = useGit();
   const [diffs, setDiffs] = useState<Diff[]>();
   const [patch, setPatch] = useState<Patch>();
   const patchRerender = useRerender();
@@ -171,7 +171,12 @@ export function CommitPanel({
             triggerRerender={patchRerender.value}
           />
         ) : (
-          <CommitMeta commit={commit} />
+          <CommitMeta
+            commit={commit}
+            css={css`
+              padding: 12px 16px;
+            `}
+          />
         )}
       </Right>
     </Container>

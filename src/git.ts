@@ -34,9 +34,31 @@ export class GitClient {
   }
 
   async getDiffs(commitSha: string) {
-    const repo = await git.Repository.open(this.repoPath);
+    const repo = await this.getRepo();
     const commit = await repo.getCommit(commitSha);
     return await getDiffs(commit);
+  }
+
+  async createBranch(commitSha: string, branchName: string) {
+    const repo = await this.getRepo();
+    await repo.createBranch(branchName, commitSha);
+  }
+
+  async createTag(
+    commitSha: string,
+    tagName: string,
+    options: { annotated: false } | { annotated: true; message: string }
+  ) {
+    const repo = await this.getRepo();
+    if (options.annotated) {
+      await repo.createTag(commitSha, tagName, options.message);
+    } else {
+      await repo.createLightweightTag(commitSha, tagName);
+    }
+  }
+
+  async getRepo() {
+    return await git.Repository.open(this.repoPath);
   }
 }
 

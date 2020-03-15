@@ -1,0 +1,29 @@
+diff --git a/node_modules/@blueprintjs/core/lib/esm/components/popover/popover.js b/node_modules/@blueprintjs/core/lib/esm/components/popover/popover.js
+index a8517df..ac45913 100644
+--- a/node_modules/@blueprintjs/core/lib/esm/components/popover/popover.js
++++ b/node_modules/@blueprintjs/core/lib/esm/components/popover/popover.js
+@@ -328,7 +328,9 @@ var Popover = /** @class */ (function (_super) {
+     Popover.prototype.getPopperModifiers = function () {
+         var _a = this.props, boundary = _a.boundary, modifiers = _a.modifiers;
+         var _b = modifiers.flip, flip = _b === void 0 ? {} : _b, _c = modifiers.preventOverflow, preventOverflow = _c === void 0 ? {} : _c;
+-        return __assign(__assign({}, modifiers), { arrowOffset: {
++        // fixes blurriness in popover text https://github.com/palantir/blueprint/issues/394#issuecomment-392395866
++        // doing it this way also fixes it for ContextMenu
++        return __assign(__assign({ computeStyle: { gpuAcceleration: false } }, modifiers), { arrowOffset: {
+                 enabled: this.isArrowEnabled(),
+                 fn: arrowOffsetModifier,
+                 order: 510,
+diff --git a/node_modules/@blueprintjs/core/lib/esnext/components/popover/popover.js b/node_modules/@blueprintjs/core/lib/esnext/components/popover/popover.js
+index 2adb204..f2a9cb5 100644
+--- a/node_modules/@blueprintjs/core/lib/esnext/components/popover/popover.js
++++ b/node_modules/@blueprintjs/core/lib/esnext/components/popover/popover.js
+@@ -327,6 +327,9 @@ let Popover = class Popover extends AbstractPureComponent2 {
+         const { boundary, modifiers } = this.props;
+         const { flip = {}, preventOverflow = {} } = modifiers;
+         return {
++            // fixes blurriness in popover text https://github.com/palantir/blueprint/issues/394#issuecomment-392395866
++            // doing it this way also fixes it for ContextMenu
++            computeStyle: { gpuAcceleration: false },
+             ...modifiers,
+             arrowOffset: {
+                 enabled: this.isArrowEnabled(),

@@ -7,7 +7,7 @@ import { CommonProps, itemGapStyle, longDate } from "../shared";
 import { CommitSignature } from "./CommitSignature";
 
 const Container = styled.div`
-  padding: 0 16px;
+  padding: 0;
 `;
 
 const Title = styled.h2`
