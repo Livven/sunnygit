@@ -34,7 +34,7 @@
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-measure": "^2.3.0",
-    "react-monaco-editor": "^0.34.0",
+    "react-monaco-editor": "^0.35.0",
     "react-window": "^1.8.5",
     "styled-components": "^5.0.1"
   },
