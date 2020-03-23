@@ -31,7 +31,7 @@
     "lodash": "^4.17.15",
     "monaco-editor": "^0.20.0",
     "nodegit": "^0.26.5",
-    "react": "^16.13.0",
+    "react": "^16.13.1",
     "react-dom": "^16.13.0",
     "react-measure": "^2.3.0",
     "react-monaco-editor": "^0.34.0",
