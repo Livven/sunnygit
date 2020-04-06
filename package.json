@@ -68,7 +68,7 @@
     "prettier": "^1.19.1",
     "react-scripts": "3.4.1",
     "shx": "^0.3.2",
-    "stylelint": "^13.2.1",
+    "stylelint": "^13.3.0",
     "stylelint-config-prettier": "^8.0.1",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^20.0.0",
