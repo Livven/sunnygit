@@ -46,12 +46,12 @@ export async function getRepoDetails(repoPath: string) {
 
   // weirdly enough sometimes references seem to be duplicated
   const rawRefs = await Promise.all(
-    (await repo.getReferences()).map(async ref => await convertRef(ref))
+    (await repo.getReferences()).map(async (ref) => await convertRef(ref))
   );
-  const refs = _.uniqBy(rawRefs, ref => ref.name);
+  const refs = _.uniqBy(rawRefs, (ref) => ref.name);
 
   // TODO make this typesafe, e.g. https://twitter.com/SeaRyanC/status/1179816663199277056
-  const refsByType = _.groupBy(refs, ref => ref.type);
+  const refsByType = _.groupBy(refs, (ref) => ref.type);
   return {
     path: absoluteRepoPath,
     branches: refsByType["branch"] || [],
@@ -67,7 +67,7 @@ async function getCommits(repo: git.Repository, refs: Ref[]) {
   for (const ref of refs) {
     walker.pushRef(ref.name);
   }
-  const commitToRefs = _.groupBy(refs, ref => ref.target);
+  const commitToRefs = _.groupBy(refs, (ref) => ref.target);
   const result = [];
   while (true) {
     try {
@@ -101,7 +101,7 @@ function convertRef(ref: git.Reference) {
 
 function convertCommit(commit: git.Commit) {
   const message = commit.message();
-  const [messageTitle, messageBody] = splitFirst(message, "\n").map(text =>
+  const [messageTitle, messageBody] = splitFirst(message, "\n").map((text) =>
     text.trim()
   );
   return {
@@ -129,7 +129,7 @@ async function getDiffs(commit: git.Commit) {
   const diffs =
     parents.length > 0
       ? await Promise.all(
-          parents.map(async parent => await getDiff(commit, parent))
+          parents.map(async (parent) => await getDiff(commit, parent))
         )
       : [await getDiff(commit)];
   return diffs;
@@ -143,7 +143,7 @@ async function getDiff(commit: git.Commit, parent?: git.Commit) {
   await diff.findSimilar();
   const patches = await Promise.all(
     (await diff.patches()).map(
-      async patch => await getPatch(patch, tree, parentTree)
+      async (patch) => await getPatch(patch, tree, parentTree)
     )
   );
   return {

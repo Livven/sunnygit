@@ -131,7 +131,7 @@ export function CommitPanel({
               title={`${
                 ignoreWhitespace ? "Show" : "Ignore"
               } leading/trailing whitespace differences`}
-              onClick={() => setIgnoreWhitespace(prev => !prev)}
+              onClick={() => setIgnoreWhitespace((prev) => !prev)}
             />
             <ButtonGroup>
               {([
@@ -155,7 +155,7 @@ export function CommitPanel({
           <CommitDiffList
             diffs={diffs}
             selectedFile={patch?.path}
-            onSelection={patch => {
+            onSelection={(patch) => {
               setPatch(patch);
               patchRerender.trigger();
             }}

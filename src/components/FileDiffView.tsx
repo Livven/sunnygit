@@ -40,9 +40,9 @@ export function FileDiffView({
       language={
         // TODO do this in constant time
         languages.find(
-          language =>
+          (language) =>
             language.filenames?.includes(patch.path) ||
-            language.extensions?.some(extension =>
+            language.extensions?.some((extension) =>
               patch.path.endsWith(extension)
             )
         )?.id || "plaintext"

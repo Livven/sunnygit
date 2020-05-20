@@ -96,7 +96,7 @@ export function CommitItem({
       <MetaRow>
         <Photo email={commit.author.email} size={16} />
         <Name>{commit.author.name}</Name>
-        {commit.refs.map(ref => (
+        {commit.refs.map((ref) => (
           <Tag key={ref.name} minimal>
             {ref.shorthand}
           </Tag>

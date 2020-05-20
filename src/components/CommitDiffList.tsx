@@ -30,7 +30,7 @@ export function CommitDiffList({
 } & CommonProps) {
   const patches = diffs[0]?.patches;
   const tree = useMemo(
-    () => nestList(patches, patch => patch.path.split("/")),
+    () => nestList(patches, (patch) => patch.path.split("/")),
     [patches]
   );
   const { isExpanded, resetExpansions, toggleExpansion } = useTreeExpansion(
@@ -43,7 +43,7 @@ export function CommitDiffList({
       className={className}
       // TODO allow switching between diffs (e.g. for merge commits)
       contents={convertTree(tree)}
-      onNodeClick={node => {
+      onNodeClick={(node) => {
         if (node.nodeData) {
           onSelection(node.nodeData);
         }
@@ -51,14 +51,14 @@ export function CommitDiffList({
           toggleExpansion(node.id.toString());
         }
       }}
-      onNodeCollapse={node => toggleExpansion(node.id.toString(), false)}
-      onNodeExpand={node => toggleExpansion(node.id.toString(), true)}
+      onNodeCollapse={(node) => toggleExpansion(node.id.toString(), false)}
+      onNodeExpand={(node) => toggleExpansion(node.id.toString(), true)}
     />
   );
 
   function convertTree(tree: TreeListNode<Patch>[]) {
-    const converted = tree.map(item => convertTreeNode(item));
-    return _.sortBy(converted, [item => item.childNodes, item => item.id]);
+    const converted = tree.map((item) => convertTreeNode(item));
+    return _.sortBy(converted, [(item) => item.childNodes, (item) => item.id]);
   }
 
   function convertTreeNode(node: TreeListNode<Patch>): ITreeNode<Patch> {

@@ -33,7 +33,7 @@ const blueprintOverrides = css`
   }
 
   ${_.range(20).map(
-    i => css`
+    (i) => css`
       .bp3-tree-node-content-${i} {
         padding-left: ${i * 12}px;
       }

@@ -53,7 +53,7 @@ function App() {
 
   // on repo refresh, deselect commit if it no longer exists
   const selectedCommit = useMemo(
-    () => repo?.commits.find(commit => commit.sha === desiredCommitSha),
+    () => repo?.commits.find((commit) => commit.sha === desiredCommitSha),
     [repo, desiredCommitSha]
   );
 
@@ -79,8 +79,8 @@ function App() {
   return (
     <GitProvider value={gitClient}>
       <Container
-        onDragOver={e => e.preventDefault()}
-        onDrop={e => {
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
           const path = e.dataTransfer.files[0]?.path;
           if (path) {
             setRepoPath(path);
@@ -91,7 +91,7 @@ function App() {
         <StyledSidebar
           repo={repo}
           selectedRefName={selectedRef?.name}
-          onSelection={ref => {
+          onSelection={(ref) => {
             setSelectedRef(ref);
             // TODO handle annotated tags (where ref.target is not a commit SHA)
             setDesiredCommitSha(ref.target);
@@ -100,7 +100,7 @@ function App() {
         <StyledCommitList
           commits={repo?.commits}
           selectedCommitSha={selectedCommit?.sha}
-          onSelection={commit => {
+          onSelection={(commit) => {
             setDesiredCommitSha(commit.sha);
             if (commit.sha !== selectedRef?.target) {
               setSelectedRef(undefined);

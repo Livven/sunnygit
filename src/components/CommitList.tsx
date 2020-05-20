@@ -23,7 +23,7 @@ export function CommitList({
   // TODO also scroll when same item is selected again e.g. via branch in sidebar
   useEffect(() => {
     const index = commits?.findIndex(
-      commit => commit.sha === selectedCommitSha
+      (commit) => commit.sha === selectedCommitSha
     );
     if (index != null && index > -1) {
       listRef.current?.scrollToItem(index, "smart");
@@ -42,7 +42,7 @@ export function CommitList({
             ref={listRef}
             height={contentRect.bounds?.height || 0}
             itemCount={commits.length}
-            itemKey={i => commits[i].sha}
+            itemKey={(i) => commits[i].sha}
             itemSize={commitItemHeight}
             overscanCount={4}
             width={contentRect.bounds?.width || 0}

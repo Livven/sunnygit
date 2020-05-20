@@ -68,7 +68,7 @@ function Sidebar({ className, onSelection, repo, selectedRefName }: Props) {
     <Tree
       className={className}
       contents={treeNodes}
-      onNodeClick={node => {
+      onNodeClick={(node) => {
         if (node.nodeData) {
           onSelection(node.nodeData);
         }
@@ -76,13 +76,13 @@ function Sidebar({ className, onSelection, repo, selectedRefName }: Props) {
           toggleExpansion(node.id.toString());
         }
       }}
-      onNodeCollapse={node => toggleExpansion(node.id.toString(), false)}
-      onNodeExpand={node => toggleExpansion(node.id.toString(), true)}
+      onNodeCollapse={(node) => toggleExpansion(node.id.toString(), false)}
+      onNodeExpand={(node) => toggleExpansion(node.id.toString(), true)}
     />
   );
 
   function convertRefs(refs: Ref[], icon?: ITreeNode["icon"]) {
-    const tree = nestList(refs, ref => ref.name.split("/").slice(2));
+    const tree = nestList(refs, (ref) => ref.name.split("/").slice(2));
     return convertTree(tree, icon);
   }
 
@@ -90,8 +90,8 @@ function Sidebar({ className, onSelection, repo, selectedRefName }: Props) {
     tree: TreeListNode<Ref>[],
     icon?: ITreeNode["icon"]
   ): ITreeNode<Ref>[] {
-    const converted = tree.map(node => convertTreeNode(node, icon));
-    return _.sortBy(converted, [item => item.childNodes, item => item.id]);
+    const converted = tree.map((node) => convertTreeNode(node, icon));
+    return _.sortBy(converted, [(item) => item.childNodes, (item) => item.id]);
   }
 
   function convertTreeNode(

@@ -27,7 +27,7 @@ export function useRerender() {
   const [value, setValue] = useState(0);
   return {
     value,
-    trigger: () => setValue(prev => prev + 1),
+    trigger: () => setValue((prev) => prev + 1),
   };
 }
 

@@ -58,7 +58,7 @@ export function CommitMeta({
         <>
           <Header>Refs</Header>
           <div css={itemGapStyle}>
-            {commit.refs.map(ref => (
+            {commit.refs.map((ref) => (
               <Tag key={ref.name} minimal>
                 {ref.shorthand}
               </Tag>
