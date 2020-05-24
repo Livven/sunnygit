@@ -1,6 +1,7 @@
 on: push
 
 env:
+  APP_NAME: sunnygit
   # why in the world is this not set by default?
   CI: true
 
@@ -21,7 +22,7 @@ jobs:
       - run: npm run pipeline
       - uses: actions/upload-artifact@v1
         with:
-          name: app-${{ runner.os }}
+          name: ${{ env.APP_NAME }}-${{ github.run_id }}-${{ runner.os }}
           path: dist
   # nodegit build does not work by default, apt-get install never finished either, and can't specify container conditionally
   build-linux:
@@ -34,5 +35,5 @@ jobs:
       - run: npm run pipeline
       - uses: actions/upload-artifact@v1
         with:
-          name: app-${{ runner.os }}
+          name: ${{ env.APP_NAME }}-${{ github.run_id }}-${{ runner.os }}
           path: dist
