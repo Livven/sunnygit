@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { BrowserWindow, app } = require("electron");
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -18,10 +18,13 @@ function createWindow() {
 
 async function addDevTools() {
   const {
-    default: installExtension,
     REACT_DEVELOPER_TOOLS,
+    default: installExtension,
   } = require("electron-devtools-installer");
   await installExtension(REACT_DEVELOPER_TOOLS);
 }
 
+// required for nodegit, but will only work until Electron 11
+// see https://github.com/nodegit/nodegit/issues/1774
+app.allowRendererProcessReuse = false;
 app.whenReady().then(createWindow);
