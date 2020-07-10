@@ -1,0 +1,27 @@
+diff --git a/node_modules/monaco-editor/esm/vs/base/browser/ui/scrollbar/scrollableElement.js b/node_modules/monaco-editor/esm/vs/base/browser/ui/scrollbar/scrollableElement.js
+index b329b9b..0fe34f7 100644
+--- a/node_modules/monaco-editor/esm/vs/base/browser/ui/scrollbar/scrollableElement.js
++++ b/node_modules/monaco-editor/esm/vs/base/browser/ui/scrollbar/scrollableElement.js
+@@ -252,8 +252,20 @@ var AbstractScrollableElement = /** @class */ (function (_super) {
+         var _a;
+         var classifier = MouseWheelClassifier.INSTANCE;
+         if (SCROLL_WHEEL_SMOOTH_SCROLL_ENABLED) {
+-            classifier.accept(Date.now(), e.deltaX, e.deltaY);
+-        }
++            // fixes smooth scrolling for non-100% scaling ratios, e.g. on high-dpi screens
++            // taken from https://github.com/microsoft/vscode/commit/2f6770df16fb8e6cb8bceaf31804e49c25285931 and https://github.com/microsoft/vscode/commit/1d8fdcab15cda8c46c640c037777b56b1d7c08f7
++            // modified to exclude the getZoomFactor call as that is not available here
++            // see also https://github.com/microsoft/vscode/issues/35711
++			const osZoomFactor = window.devicePixelRatio;
++			if (platform.isWindows || platform.isLinux) {
++				// On Windows and Linux, the incoming delta events are multiplied with the OS zoom factor.
++				// The OS zoom factor can be reverse engineered by using the device pixel ratio and the configured zoom factor into account.
++				classifier.accept(Date.now(), e.deltaX / osZoomFactor, e.deltaY / osZoomFactor);
++			} else {
++				classifier.accept(Date.now(), e.deltaX, e.deltaY);
++			}
++		}
++
+         // console.log(`${Date.now()}, ${e.deltaY}, ${e.deltaX}`);
+         if (e.deltaY || e.deltaX) {
+             var deltaY = e.deltaY * this._options.mouseWheelScrollSensitivity;
