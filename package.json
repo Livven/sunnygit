@@ -31,7 +31,7 @@
     "dayjs": "^1.8.27",
     "lodash": "^4.17.15",
     "monaco-editor": "^0.20.0",
-    "nodegit": "^0.26.5",
+    "nodegit": "^0.27.0",
     "react": "^16.13.1",
     "react-collapse": "^5.0.1",
     "react-dom": "^16.13.1",
