@@ -28,7 +28,7 @@
     "@blueprintjs/core": "^3.28.0",
     "antd": "^4.2.5",
     "crypto-js": "^4.0.0",
-    "dayjs": "^1.8.27",
+    "dayjs": "^1.8.33",
     "lodash": "^4.17.15",
     "monaco-editor": "^0.20.0",
     "nodegit": "^0.26.5",
