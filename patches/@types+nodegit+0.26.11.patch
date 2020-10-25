@@ -48,28 +48,19 @@ index 03781cc..bb6f81b 100644
          TOPOLOGICAL = 1,
          TIME = 2,
 diff --git a/node_modules/@types/nodegit/tree.d.ts b/node_modules/@types/nodegit/tree.d.ts
-index 4546316..da14b5f 100644
+index c850ffb..c8e40ac 100644
 --- a/node_modules/@types/nodegit/tree.d.ts
 +++ b/node_modules/@types/nodegit/tree.d.ts
-@@ -3,7 +3,7 @@ import { TreeEntry } from './tree-entry';
- import { Repository } from './repository';
- import { Object } from './object';
- import { Treebuilder } from './tree-builder';
--import { DiffFile } from './diff-file';
-+import { Diff } from './diff';
- import { TreeUpdate } from './tree-update';
- 
- export namespace Tree {
-@@ -38,11 +38,11 @@ export class Tree {
+@@ -39,11 +39,11 @@ export class Tree {
      /**
       * Diff two trees
       */
--    diff(tree: Tree, callback?: Function): Promise<DiffFile[]>;
+-    diff(tree: Tree, callback?: Function): Promise<Diff>;
 +    diff(tree: Tree | undefined, callback?: Function): Promise<Diff>;
      /**
       * Diff two trees with options
       */
--    diffWithOptions(tree: Tree, options?: Object, callback?: Function): Promise<DiffFile[]>;
+-    diffWithOptions(tree: Tree, options?: Object, callback?: Function): Promise<Diff>;
 +    diffWithOptions(tree: Tree | undefined, options?: Object, callback?: Function): Promise<Diff>;
      /**
       * Get an entry at the ith position.
