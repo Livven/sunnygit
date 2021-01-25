@@ -30,7 +30,7 @@
     "crypto-js": "^4.0.0",
     "dayjs": "^1.9.4",
     "lodash": "^4.17.20",
-    "monaco-editor": "^0.21.2",
+    "monaco-editor": "^0.21.3",
     "nodegit": "^0.27.0",
     "react": "^17.0.1",
     "react-collapse": "^5.0.1",
