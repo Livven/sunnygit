@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^3.35.0",
-    "antd": "^4.7.3",
+    "antd": "^4.16.7",
     "crypto-js": "^4.0.0",
     "dayjs": "^1.9.4",
     "lodash": "^4.17.20",
